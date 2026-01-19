@@ -70,5 +70,32 @@ Change propagation always flows through the change_log table, which prevents cir
 - Service account authentication avoids embedding credentials in Apps Script
 - The architecture can be extended to support multiple tables and sheets
 
+---
 
+## Edge Cases and Design Considerations
 
+- **Infinite sync loops**  
+  Prevented by tagging every change with a source field (`sheet` or `db`) and ensuring the worker only processes database-originated changes.
+
+- **Concurrent edits in Google Sheets**  
+  Each edit is treated as an independent event. Idempotent upserts using a stable primary key (`__id`) ensure consistency even when updates overlap.
+
+- **Partial or missing data**  
+  The system dynamically maps columns based on headers and safely handles empty or missing values without breaking the sync.
+
+- **Schema drift protection**  
+  Removed columns are explicitly filtered out at the backend layer to avoid silent database failures.
+
+- **Failure isolation**  
+  Changes are written to a `change_log` table before processing. If the worker crashes, unprocessed changes remain and are retried.
+
+- **Idempotency**  
+  Database writes use upserts to ensure repeated events do not corrupt the state.
+
+- **Scalability considerations**  
+  The change log model allows horizontal scaling of workers and can be extended to multiple tables or sheets without architectural changes.
+
+- **Security**  
+  Secrets are stored in environment variables. Google Sheets users employ a service account, thereby avoiding credential leakage into client-side scripts.
+
+```
