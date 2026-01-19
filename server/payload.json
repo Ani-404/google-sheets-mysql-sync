@@ -1,0 +1,15 @@
+{
+    "change_id": "11111111-2222-3333-4444-555555555555",
+    "source": "sheet",
+    "table": "users",
+    "pk": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+    "op": "UPSERT",
+    "row": {
+      "__id": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+      "name": "Test User",
+      "email": "test@example.com",
+      "role": "intern",
+      "__version": 1,
+      "__last_modified_utc": "2026-01-17T15:00:00.000Z"
+    }
+  }  
